@@ -1,12 +1,13 @@
 import speech_recognition as sr
-from pydub import AudioSegment, silence
+from pydub import AudioSegment
+from pydub.silence import split_on_silence
 import os
 
 # use cwd to set root dir path
-FILES_DIR = os.path.join(os.getcwd(), "files")
+FILES_DIR = os.path.join(os.getcwd(), "data")
 
 # change this
-name_of_recording = "training_voice_15min.mp3"
+name_of_recording = "input.mp3"
 
 # other folders
 rec_src_dir = os.path.join(FILES_DIR, name_of_recording)
@@ -25,3 +26,19 @@ else:
     audio = AudioSegment.from_wav(output_file)
 
 desired_sr = 22050
+
+# define the minimum silence length (in milliseconds)
+min_silence_len = 10000
+
+# define the silence threshold (in decibels)
+silence_thresh = -40
+
+# split the audio into chunks of approximately 10 seconds
+chunks = []
+start_time = 0
+end_time = 10000
+while end_time <= len(audio):
+    chunk = audio[start_time:end_time]
+    chunks.append(chunk)
+    start_time += 10000
+    end_time += 10000
